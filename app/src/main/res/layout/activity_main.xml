@@ -36,4 +36,9 @@
         android:text="Logg inn"
         android:onClick="logIn"/>
 
+    <TextView
+        android:id="@+id/userMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
