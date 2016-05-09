@@ -2,6 +2,7 @@ package no.hin.rombooking;
 
 import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -28,18 +29,20 @@ public class JSONParser
     static JSONObject jObj = null;
     static String json = "";
 
-    public String url_login = "https://kark.hin.no/~540195/android/login.php";
+    //public String url_login = "https://kark.hin.no/~540195/android/login.php";
 
     public JSONParser()
     {
 
     }
 
-    public String makeHttpsRequest(String... args)
+    /*Takes provided url and parameters and fetches JSON objects
+    from the server*/
+    public JSONObject makeHttpsRequest(String request_url, String params)
     {
         try
         {
-            URL url = new URL(url_login);
+            URL url = new URL(request_url);
             HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
 
             connection.setRequestMethod("POST");
@@ -50,7 +53,7 @@ public class JSONParser
             OutputStream outputStream = connection.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 
-            String params = "username=" + args[0] + "&password=" + args[1];
+            //String params = "username=" + args[0] + "&password=" + args[1];
 
             writer.write(params);
             writer.flush();
@@ -86,11 +89,14 @@ public class JSONParser
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
 
-        return json;
-        /*try {
+        //return json;
+
+        try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
-        }*/
+        }
+
+        return jObj;
     }
 }

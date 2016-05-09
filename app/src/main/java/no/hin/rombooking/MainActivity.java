@@ -12,6 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -28,6 +34,8 @@ public class MainActivity extends AppCompatActivity
 
     private ResponseMessage resMessage;
 
+    private static final String URL_LOGIN = "https://kark.hin.no/~540195/android/login.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -43,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     {
         EditText username = (EditText)findViewById(R.id.userName);
         EditText password = (EditText)findViewById(R.id.userPass);
-        Log.e("Message:", "Successful. Username: " + username.getText() + " Password:" + password.getText());
+        Log.e("Message:", "Username: " + username.getText() + " Password:" + password.getText());
 
         myusername = username.getText().toString();
         mypassword = password.getText().toString();
@@ -73,8 +81,27 @@ public class MainActivity extends AppCompatActivity
         protected String doInBackground(String... args)
         {
             Gson gson = new Gson();
-            final ResponseMessage message = gson.fromJson(jsonParser.makeHttpsRequest(myusername, mypassword), ResponseMessage.class);
 
+            String params = "username=" + myusername + "&password=" + mypassword;
+
+            JSONObject response = jsonParser.makeHttpsRequest(URL_LOGIN, params);
+
+            String temp = response.toString();
+
+            final ResponseMessage message = gson.fromJson(temp, ResponseMessage.class);
+
+            /*try {
+                JSONObject jObj = new JSONObject(response);
+                int i = jObj.getInt("success");
+                String s = jObj.getString("message");
+                JSONArray jsonArray = jObj.getJSONArray("array");
+                jsonArray.toString();
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+*/
             Log.e("Response", message.getMessage());
 
             runOnUiThread(new Runnable()
@@ -82,7 +109,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void run()
                 {
-                    setMessage(message.getMessage());
+                    setMessage(message.getSuccess() + " " + message.getMessage());
                 }
             });
 
